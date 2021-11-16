@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Col, Row } from 'reactstrap'
 import { Add } from './Add'
 import { List } from './List'
@@ -10,12 +10,21 @@ export const Quehaceres = () => {
 
     const [tasks, setTasks] = useState(initialState)
 
+    useEffect(() => {
+        const localTask = JSON.parse(localStorage.getItem('tasks'));
+        console.log(localTask);
+        if (localTask !== null) {
+            setTasks(localTask);
+        }
+    }, [])
+
     const createTask = (data) => {
         data.done = false;
         setTasks([
             ...tasks,
             data
         ]);
+        localStorage.setItem('tasks', JSON.stringify(tasks))
     }
 
     const updateTask = (data, i) => {
@@ -24,10 +33,13 @@ export const Quehaceres = () => {
         setTasks([
             ...newTasks,
         ]);
+        localStorage.setItem('tasks', JSON.stringify(newTasks))
     }
 
     const deleteTask = (e, i) => {
-        setTasks(tasks.filter((e, indice) => indice !== i));
+        const filterTasks = tasks.filter((e, indice) => indice !== i);
+        setTasks(filterTasks);
+        localStorage.setItem('tasks', JSON.stringify(filterTasks))
     }
 
     return (
